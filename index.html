@@ -12,40 +12,64 @@
         integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
 </head>
 
+
 <body>
     <div class="container">
         <br>
         <div style="border:1px solid #000; padding: 15px;">
-            <h1>MOS Test</h1>
-
+            <h1>MOS Test on Speech Disfluency</h1>
             <p>
-                Thank you for participating in this experiment!<br>
-                The experimental procedure is as follows.
+               お忙しい中、ご協力ありがとうございます！<br>
+               本実験は、音声の非流暢性除去に関わる主観評価実験であり、受験の所要時間は20分〜30分です。
+            </p>
+            <h2>実験手順</h2>
+            <ol>
+                <li>名前とSetを入力し、"Start"ボタンをクリックしてください。</li>
+                <li>発話を聞いてから、自然性と流暢性二つの指標で評価してください<br>
+                    1ページに5発話があり、1ページが終わってから"Next"ボタンをクリックしてください。    
+                </li>
+                <li><b>全ての評価が終わってから"Finish"ボタンをクリックしてください。"name"_set_n.csvというCSVは自動的ダウンロードされます。</b>
+                </li>
+                <li>CSVファイルを耿のSlack、もしくは下記メールアドレスまで送ってください</li>
+                <li>Email : haopeng.geng@g.sp.m.is.nagoya-u.ac.jp</li>
+            </ol>
+            <h2>評価指標の説明</h2>
+            <p>
+                <h4>Natuaility(自然性)</h4>
+                <p>
+                本実験の自然性を「音声が編集されたかどうか」との尺度で評価する。<br>
+                つまり、下記のよう「変な音」、「音声が途切れた」、「継ぎ目が気になる」などを感じるなら低い評価を付けると良い。<br>
+                例えば: <br>
+                <h6>なのでこれで晴れてですね</h6>
+                Nat_1. (変な音)<br>
+                <audio src="wav/samples/noisy_eval1_0051.wav" controls preload="auto"></audio><br>
+                Nat_2. (途切れた)　<br>
+                <audio src="wav/samples/pause_eval1_0051.wav" controls preload="auto"></audio><br>
+                Nat_3. (継ぎ目が気になる)　<br>
+                <audio src="wav/samples/concat_eval1_0051.wav" controls preload="auto"></audio><br>
+                </p>
             </p>
 
-            <h2>Experimental Procedure</h2>
-            <ol>
-                <li>Press "start" button.</li>
-                <li>Listen to the displayed audio and give it the rating you think it deserves.<br>
-                    The evaluation criteria is sound quality.</li>
-                <li>Press "next" button and start next evaluation.</li>
-                <li><b>When you finish all evaluation, press "finish" button and download the CSV file.</b>
-                </li>
-                <li>Send the CSV file to the following email address.</li>
-                <li>Email : yoneyama.reo@g.sp.m.is.nagoya-u.ac.jp</li>
-            </ol>
+            <p>
+                <p>
+                <h4>Fluency(流暢性)</h4>
+                本実験の流暢性を「発話内容は流暢かどうか」で評価する。<br>
+                つまり、フィラーなどがたくさん存在する場合、低い評価を付けると良い。<br>
+                例えば: <br>
+                <h6>なので今日の講義はいかにこの式を見た時に</h6>
+                Flu_1. (フィラーが多い)<br>
+                <audio src="wav/samples/disfluent_eval3_0019.wav" controls preload="auto"></audio><br>
+                Flu_2. (フィターが少ない)　<br>
+                <audio src="wav/samples/fluent_eval3_0019.wav" controls preload="auto"></audio><br>
+                </p>
+            </p>
 
-            <h2>Notes</h2>
+            <h2>その他</h2>
             <ul>
-                <li>This experiment takes about 20 〜 30 minutes.</li>
+                <li>再生ボタンがグレーなっている場合、"どちらともいえない"をお選びください。<li>
                 <li>Please do not update the page during this experiment.</li>
-                <li>If you are using a smartphone, you may not be able to download the result, so we recommend using a
-                    PC.
-                </li>
-                <li>Please conduct this experiment using headphones or earphones in a silent place.</li>
-                <li>All information obtained in this experiment will not be used for any purpose other than this
-                    experiment.
-                </li>
+                <li>PCブラウザからご参加をお願いします！</li>
+                <li>イヤホンやヘットホンでの</li>
             </ul>
         </div>
         <br>
@@ -53,10 +77,14 @@
         <script type="text/javascript" src="mos.js"></script>
 
         <div id="Display1">
-            <!-- <p>
+            <p>
                 <label for="name"> Name </label><br>
                 <input type="text" id="name" class="form-controll" placeholder="Your Name">
-            </p> -->
+            </p>
+            <p> Setlist number: <br>
+                <label><input type="radio" name="set" id="number" value="1">1</label><br>
+                <label><input type="radio" name="set" id="number" value="2">2</label><br>
+            <p>
             <!-- <p>
                 <label for="area"> Area </label><br>
                 <input type="text" id="area" placeholder="e.g. Japan">
@@ -70,35 +98,44 @@
             <p id="page"></p>
 
             <p id="audio0"></p>
-            <p id="select0"></p>
-
+            <p id="fluselect0"></p>
+            <p id="natselect0"></p>
+            
             <p id="audio1"></p>
-            <p id="select1"></p>
+            <p id="fluselect1"></p>
+            <p id="natselect1"></p>
 
             <p id="audio2"></p>
-            <p id="select2"></p>
+            <p id="fluselect2"></p>
+            <p id="natselect2"></p>
 
             <p id="audio3"></p>
-            <p id="select3"></p>
+            <p id="fluselect3"></p>
+            <p id="natselect3"></p>
 
             <p id="audio4"></p>
-            <p id="select4"></p>
+            <p id="fluselect4"></p>
+            <p id="natselect4"></p>
 
             <p id="audio5"></p>
-            <p id="select5"></p>
-
+            <p id="fluselect5"></p>
+            <p id="natselect5"></p>
+            
             <p id="audio6"></p>
-            <p id="select6"></p>
-
+            <p id="fluselect6"></p>
+            <p id="natselect6"></p>
+            
             <p id="audio7"></p>
-            <p id="select7"></p>
+            <p id="fluselect7"></p>
+            <p id="natselect7"></p>
 
             <p id="audio8"></p>
-            <p id="select8"></p>
-
+            <p id="fluselect8"></p>
+            <p id="natselect8"></p>
+            
             <p id="audio9"></p>
-            <p id="select9"></p>
-
+            <p id="fluselect9"></p>
+            <p id="natselect9"></p>
             <p>
                 <button id="prev" onclick="prev()">prev</button>
                 <button id="next" onclick="next()">next</button>

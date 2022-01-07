@@ -29,18 +29,33 @@ const pickN = (min, max, n) => {
 // start experiment
 function start_experiment() {
     // get user name
-    // var name = document.getElementById("name").value.replace(" ", "_");
-    // if (name == "") {
-    //     alert("Please enter your name.");
-    //     return false;
-    // }
+    var name = document.getElementById("name").value.replace(" ", "_");
+    if (name == "") {
+        alert("Please enter your name.");
+        return false;
+    }
+    var set_num = "0"
+    var number = document.getElementsByName("set");
+    for (var i = 0; i < number.length; i++) {
+        if (number[i].checked) {
+            set_num = number[i].value;
+        }
+    }
+    if (set_num == "0") {
+        alert("Please press the setlist number button.");
+        return false;
+    }
 
     // convert display
     Display();
 
     // directories for methods
     var methods = [];
-    methods.push(wav_dir + "set1/");
+    methods.push(wav_dir + "mel_db_noise_over_3/");
+    methods.push(wav_dir + "mel_db_insert/");
+    methods.push(wav_dir + "mel_db_noise_concat/");
+    methods.push(wav_dir + "mel_db_ori/");
+    methods.push(wav_dir + "mel_db_noise_new_concat/");
     // methods.push(wav_dir + "method2/");
     // methods.push(wav_dir + "method3/");
     // methods.push(wav_dir + "method4/");
@@ -53,9 +68,11 @@ function start_experiment() {
 
     // pick up samples randomly
     var rands = pickN(0, n_utt - 1, n_per_page * 2);
-    file_list = makeFileList(methods, rands);
-    outfile = "result.csv";
-    scores = (new Array(file_list.length)).fill(0);
+    // var number = document.getElementById("number").value
+    file_list = makeFileList(methods, set_num).slice(0, 2);
+    outfile = name + "_" + "set" + set_num + ".csv";
+    nat_scores = (new Array(file_list.length)).fill(0);
+    flu_scores = (new Array(file_list.length)).fill(0);
     init();
 }
 
@@ -78,12 +95,29 @@ function loadText(filename) {
 }
 
 // make file list
-function makeFileList(methods, rands) {
+// function makeFileList(methods, rands) {
+//     var files = new Array();
+//     var names = loadText(wavnames);
+//     for (var i = 0; i < methods.length; i++) {
+//         for (var j = 0; j < rands.length; j++) {
+//             files.push(methods[i] + names[rands[j]] + ".wav");
+//         }
+//     }
+//     files.shuffle();
+//     return files;
+// }
+
+function makeFileList(methods, which_set) {
     var files = new Array();
-    var names = loadText(wavnames);
+    if (which_set == "1"){
+        var names = loadText(wavnames_a);
+    }
+    if (which_set == "2"){
+        var names = loadText(wavnames_b);
+    } 
     for (var i = 0; i < methods.length; i++) {
-        for (var j = 0; j < rands.length; j++) {
-            files.push(methods[i] + names[rands[j]] + ".wav");
+        for (var j = 0; j < names.length; j++) {
+            files.push(methods[i] + names[j] + ".wav");
         }
     }
     files.shuffle();
@@ -91,7 +125,7 @@ function makeFileList(methods, rands) {
 }
 
 function setAudio() {
-    document.getElementById("page").textContent = `Page ${page + 1} / ${scores.length / n_per_page}`;
+    document.getElementById("page").textContent = `Page ${page + 1} / ${nat_scores.length / n_per_page}`;
     for (var i = 0; i < n_per_page; i++) {
         // set audio
         document.getElementById("audio" + String(i)).innerHTML = `${i + 1}.<br>`
@@ -100,23 +134,43 @@ function setAudio() {
             + '</audio>';
 
         // initialize selected option using scores
-        var selected = (new Array(6)).fill('');
+        var natselected = (new Array(6)).fill('');
         for (var j = 0; j < 6; j++) {
-            if (scores[page * n_per_page + i] == String(j)) {
-                selected[j] = " selected";
+            if (nat_scores[page * n_per_page + i] == String(j)) {
+                natselected[j] = " natselected";
                 break;
             }
         }
-        document.getElementById("select" + String(i)).innerHTML = `<select id="eval${i}`
+        var fluselected = (new Array(6)).fill('');
+        for (var j = 0; j < 6; j++) {
+            if (flu_scores[page * n_per_page + i] == String(j)) {
+                fluselected[j] = " fluselected";
+                break;
+            }
+        }
+        
+        document.getElementById("fluselect" + String(i)).innerHTML = `<h4>Fluency(流暢性) </h4>`
+            + `<select id="flu${i}`
             + `" onchange="evaluation(${i})">`
-            + `<option value="0"${selected[0]}></option>`
-            + `<option value="5"${selected[5]}>Excellent</option>`
-            + `<option value="4"${selected[4]}>Good</option>`
-            + `<option value="3"${selected[3]}>Fair</option>`
-            + `<option value="2"${selected[2]}>Poor</option>`
-            + `<option value="1"${selected[1]}>Bad</option>`
+            + `<option value="0"${fluselected[0]}>Please Select</option>`
+            + `<option value="5"${fluselected[5]}>Excellent(とても流暢)</option>`
+            + `<option value="4"${fluselected[4]}>Good(流暢)</option>`
+            + `<option value="3"${fluselected[3]}>Fair(どちらともいえない)</option>`
+            + `<option value="2"${fluselected[2]}>Poor(やや流暢さを欠いた)</option>`
+            + `<option value="1"${fluselected[1]}>Bad(流暢じゃない)</option>`
             + '</select>';
+        document.getElementById("natselect" + String(i)).innerHTML = `<h4>Naturality(自然性) </h4>`
+            +`<select id="nat${i}`
+            + `" onchange="evaluation(${i})">`
+            + `<option value="0"${natselected[0]}><font color=red>Please Select</font></option>`
+            + `<option value="5"${natselected[5]}>Excellent(未編集)</option>`
+            + `<option value="4"${natselected[4]}>Good(未編集に近い)</option>`
+            + `<option value="3"${natselected[3]}>Fair(どちらともいえない)</option>`
+            + `<option value="2"${natselected[2]}>Poor(やや編集された感じ)</option>`
+            + `<option value="1"${natselected[1]}>Bad(編集されたと思う)</option>`
+            + '</select>';  
     }
+
 }
 
 function init() {
@@ -134,12 +188,12 @@ function setButton() {
         document.getElementById("prev").disabled = false;
     }
     // next button
-    if (page == scores.length / n_per_page - 1) {
+    if (page == nat_scores.length / n_per_page - 1 && page == flu_scores.length / n_per_page - 1) {
         document.getElementById("next").disabled = true;
     } else {
         document.getElementById("next").disabled = false;
         for (var i = 0; i < n_per_page; i++) {
-            if (document.getElementById(`eval${i}`).value == "0") {
+            if (document.getElementById(`nat${i}`).value == "0" || document.getElementById(`flu${i}`).value == "0" ) {
                 document.getElementById("next").disabled = true;
                 break;
             }
@@ -148,7 +202,11 @@ function setButton() {
     // finish button
     for (var i = 0; i < file_list.length; i++) {
         document.getElementById("finish").disabled = false;
-        if (scores[i] == "0") {
+        if (nat_scores[i] == "0") {
+            document.getElementById("finish").disabled = true;
+            break;
+        }
+        if (flu_scores[i] == "0") {
             document.getElementById("finish").disabled = true;
             break;
         }
@@ -156,8 +214,11 @@ function setButton() {
 }
 
 function evaluation(i) {
-    if (scores[n_per_page * page + i] == "0") {
-        scores[page * n_per_page + i] = document.getElementById(`eval${i}`).value;
+    if (nat_scores[n_per_page * page + i] == "0") {
+        nat_scores[page * n_per_page + i] = document.getElementById(`nat${i}`).value;
+    }
+    if (flu_scores[n_per_page * page + i] == "0") {
+        flu_scores[page * n_per_page + i] = document.getElementById(`flu${i}`).value;
     }
     setButton();
 }
@@ -166,8 +227,9 @@ function exportCSV() {
     var csvData = "";
 
     for (var i = 0; i < file_list.length; i++) {
-        csvData += file_list[i] + ","
-            + scores[i] + "\r\n";
+        
+        csvData += file_list[i] + "," + file_list[i].split('/')[1] + ", "
+            + nat_scores[i] + "," + flu_scores[i] + "\r\n";
     }
 
     const link = document.createElement("a");
@@ -201,8 +263,9 @@ function finish() {
 
 // directory name
 const wav_dir = "wav/";
-const wavnames = "wav/wavnames.txt"
-const n_utt = 5;
+const wavnames_a = "wav/wavnames1.txt"
+const wavnames_b = "wav/wavnames2.txt"
+const n_utt = 1;
 
 // invalid enter key
 document.onkeypress = invalid_enter();
@@ -210,6 +273,7 @@ document.onkeypress = invalid_enter();
 // global variables
 var outfile;
 var file_list;
-var scores;
+var nat_scores;
+var flu_scores;
 var page;
 var n_per_page;
