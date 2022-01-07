@@ -16,54 +16,46 @@ function invalid_enter() {
     }
 }
 
+const pickN = (min, max, n) => {
+    const list = new Array(max - min + 1).fill().map((_, i) => i + min);
+    const ret = [];
+    while (n--) {
+        const rand = Math.floor(Math.random() * (list.length + 1)) - 1;
+        ret.push(...list.splice(rand, 1))
+    }
+    return ret;
+}
+
 // start experiment
 function start_experiment() {
     // get user name
-    var name = document.getElementById("name").value.replace(" ", "_");
-    if (name == "") {
-        alert("Please enter your name.");
-        return false;
-    }
-
-    // get setlist number
-    var set_num = "0"
-    var number = document.getElementsByName("set");
-    for (var i = 0; i < number.length; i++) {
-        if (number[i].checked) {
-            set_num = number[i].value;
-        }
-    }
-    if (set_num == "0") {
-        alert("Please press the setlist number button.");
-        return false;
-    }
+    // var name = document.getElementById("name").value.replace(" ", "_");
+    // if (name == "") {
+    //     alert("Please enter your name.");
+    //     return false;
+    // }
 
     // convert display
     Display();
 
-    var method_paths = [];
-    /*
-        you have to customize this part
-        this is an example which enables each set
-        includes different number of methods.
-    */
-    if (set_num == "1") {
-        method_paths.push(wav_dir + "set" + set_num + "/natural.list");
-    } else if (set_num == "2") {
-        method_paths.push(wav_dir + "set" + set_num + "/world.list");
-        method_paths.push(wav_dir + "set" + set_num + "/nsf.list");
-    } else if (set_num == "3") {
-        method_paths.push(wav_dir + "set" + set_num + "/qppwg.list");
-        method_paths.push(wav_dir + "set" + set_num + "/usfgan.list");
-    }
-    /*
-        end
-    */
+    // directories for methods
+    var methods = [];
+    methods.push(wav_dir + "mel_db_noise_over_3/");
+    // methods.push(wav_dir + "method2/");
+    // methods.push(wav_dir + "method3/");
+    // methods.push(wav_dir + "method4/");
+    // methods.push(wav_dir + "method5/");
+    // methods.push(wav_dir + "method6/");
+    // methods.push(wav_dir + "method7/");
 
-    file_list = makeFileList(method_paths);
-    outfile = name + "_set" + set_num + ".csv";
+    // number of samples displayed per page
+    n_per_page = 10;
+
+    // pick up samples randomly
+    var rands = pickN(0, n_utt - 1, n_per_page * 2);
+    file_list = makeFileList(methods, rands);
+    outfile = "result.csv";
     scores = (new Array(file_list.length)).fill(0);
-    eval = document.getElementsByName("eval");
     init();
 }
 
@@ -71,6 +63,7 @@ function start_experiment() {
 function Display() {
     document.getElementById("Display1").style.display = "none";
     document.getElementById("Display2").style.display = "block";
+    // document.getElementById("Display3").style.display = "none";
 }
 
 // load text file
@@ -85,87 +78,95 @@ function loadText(filename) {
 }
 
 // make file list
-function makeFileList(method_paths) {
-    var files = [];
-    for (var i = 0; i < method_paths.length; i++) {
-        tmp = loadText(method_paths[i]);
-        files = files.concat(tmp);
+function makeFileList(methods, rands) {
+    var files = new Array();
+    var names = loadText(wavnames);
+    for (var i = 0; i < methods.length; i++) {
+        for (var j = 0; j < rands.length; j++) {
+            files.push(methods[i] + names[rands[j]] + ".wav");
+        }
     }
     files.shuffle();
     return files;
 }
 
 function setAudio() {
-    document.getElementById("page").textContent = "" + (n + 1) + "/" + scores.length;
+    document.getElementById("page").textContent = `Page ${page + 1} / ${scores.length / n_per_page}`;
+    for (var i = 0; i < n_per_page; i++) {
+        // set audio
+        document.getElementById("audio" + String(i)).innerHTML = `${i + 1}.<br>`
+            + `<audio src="${file_list[page * n_per_page + i]}"`
+            + ' controls preload="auto">'
+            + '</audio>';
 
-    document.getElementById("audio").innerHTML = 'Voice:<br>'
-        + '<audio src="' + file_list[n]
-        + '" controls preload="auto">'
-        + '</audio>';
+        // initialize selected option using scores
+        var selected = (new Array(6)).fill('');
+        for (var j = 0; j < 6; j++) {
+            if (scores[page * n_per_page + i] == String(j)) {
+                selected[j] = " selected";
+                break;
+            }
+        }
+        document.getElementById("select" + String(i)).innerHTML = `<select id="eval${i}`
+            + `" onchange="evaluation(${i})">`
+            + `<option value="0"${selected[0]}></option>`
+            + `<option value="5"${selected[5]}>Excellent</option>`
+            + `<option value="4"${selected[4]}>Good</option>`
+            + `<option value="3"${selected[3]}>Fair</option>`
+            + `<option value="2"${selected[2]}>Poor</option>`
+            + `<option value="1"${selected[1]}>Bad</option>`
+            + '</select>';
+    }
 }
 
 function init() {
-    n = 0;
+    page = 0;
     setAudio();
-    evalCheck();
     setButton();
 }
 
-function evalCheck() {
-    const c = scores[n];
-    if ((c <= 0) || (c > eval.length)) {
-        for (var i = 0; i < eval.length; i++) {
-            eval[i].checked = false;
-        }
-    }
-    else {
-        eval[c - 1].checked = true;
-    }
-}
-
 function setButton() {
-    if (n == (scores.length - 1)) {
+    // prev button
+    if (page == 0) {
+        document.getElementById("prev").disabled = true;
+    }
+    else {
         document.getElementById("prev").disabled = false;
-        document.getElementById("next2").disabled = true;
-        document.getElementById("finish").disabled = true;
-        for (var i = 0; i < eval.length; i++) {
-            if (eval[i].checked) {
-                document.getElementById("finish").disabled = false;
+    }
+    // next button
+    if (page == scores.length / n_per_page - 1) {
+        document.getElementById("next").disabled = true;
+    } else {
+        document.getElementById("next").disabled = false;
+        for (var i = 0; i < n_per_page; i++) {
+            if (document.getElementById(`eval${i}`).value == "0") {
+                document.getElementById("next").disabled = true;
                 break;
             }
         }
     }
-    else {
-        if (n == 0) {
-            document.getElementById("prev").disabled = true;
-        }
-        else {
-            document.getElementById("prev").disabled = false;
-        }
-        document.getElementById("next2").disabled = true;
-        document.getElementById("finish").disabled = true;
-        for (var i = 0; i < eval.length; i++) {
-            if (eval[i].checked) {
-                document.getElementById("next2").disabled = false;
-                break;
-            }
+    // finish button
+    for (var i = 0; i < file_list.length; i++) {
+        document.getElementById("finish").disabled = false;
+        if (scores[i] == "0") {
+            document.getElementById("finish").disabled = true;
+            break;
         }
     }
 }
 
-function evaluation() {
-    for (var i = 0; i < eval.length; i++) {
-        if (eval[i].checked) {
-            scores[n] = 5 - i;
-        }
+function evaluation(i) {
+    if (scores[n_per_page * page + i] == "0") {
+        scores[page * n_per_page + i] = document.getElementById(`eval${i}`).value;
     }
     setButton();
 }
 
 function exportCSV() {
     var csvData = "";
+
     for (var i = 0; i < file_list.length; i++) {
-        csvData += "" + file_list[i] + ","
+        csvData += file_list[i] + ","
             + scores[i] + "\r\n";
     }
 
@@ -182,16 +183,14 @@ function exportCSV() {
 }
 
 function next() {
-    n++;
+    page++;
     setAudio();
-    evalCheck();
     setButton();
 }
 
 function prev() {
-    n--;
+    page--;
     setAudio();
-    evalCheck();
     setButton();
 }
 
@@ -202,6 +201,8 @@ function finish() {
 
 // directory name
 const wav_dir = "wav/";
+const wavnames = "wav/wavnames.txt"
+const n_utt = 600;
 
 // invalid enter key
 document.onkeypress = invalid_enter();
@@ -210,7 +211,5 @@ document.onkeypress = invalid_enter();
 var outfile;
 var file_list;
 var scores;
-
-// since loadText() doesn't work in local
-var n = 0;
-var eval = document.getElementsByName("eval");
+var page;
+var n_per_page;
