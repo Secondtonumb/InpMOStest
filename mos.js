@@ -49,7 +49,7 @@ function start_experiment() {
     // methods.push(wav_dir + "method7/");
 
     // number of samples displayed per page
-    n_per_page = 10;
+    n_per_page =5;
 
     // pick up samples randomly
     var rands = pickN(0, n_utt - 1, n_per_page * 2);
