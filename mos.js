@@ -159,7 +159,7 @@ function setAudio() {
             + `<option value="2"${fluselected[2]}>Poor(やや流暢さを欠いた)</option>`
             + `<option value="1"${fluselected[1]}>Bad(流暢じゃない)</option>`
             + '</select>';
-        document.getElementById("natselect" + String(i)).innerHTML = `<h4>Naturality(自然性) </h4>`
+        document.getElementById("natselect" + String(i)).innerHTML = `<h4>Naturalness(自然性) </h4>`
             +`<select id="nat${i}`
             + `" onchange="evaluation(${i})">`
             + `<option value="0"${natselected[0]}><font color=red>Please Select</font></option>`
