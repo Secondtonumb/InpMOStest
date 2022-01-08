@@ -1,98 +1,152 @@
+
 <!DOCTYPE html>
 
 <html>
 
-    <head>
-        <meta charset="UTF-8">
-        <title>MOS Test</title>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>MOS Test</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+</head>
 
-    <body>
 
-        <!-- 注意書きなど -->
-        <div style="border:1px solid #000000; padding: 10px; border-radius: 0px; background: ##ffffff;">
+<body>
+    <div class="container">
+        <br>
+        <div style="border:1px solid #000; padding: 15px;">
+            <h1>MOS Test on Speech Disfluency</h1>
             <p>
-                <h1>MOS Test</h1>
-
-                Thank you for your cooperation in my experiment.</br>
-                This experiment is MOS test.</br>
-                Listen to the voices and give it the score you think it deserves.</br>
-                I will explain the experimental procedure.
-
-                <h2>Experimental Procedure</h2>
-                <ol>
-                    <li>Enter your name and select the set list number from 1 to 10.</li>
-                    <li>Press "Start Experiment" button.</li>
-                    <li>Listen to the voices and give it the score you think it deserves.<br>
-                        The evaluation criteria is sound quality.</li>
-                    <li>Press "next" button and start next evaluation.</li>
-                    <li>When you finish this experiment, press "finish" button and download the result.<br>
-                        Send it to slack or the following email address.</li>
-                    <li>Email address: yoneyama.reo@g.sp.m.is.nagoya-u.ac.jp</font></li>
-                </ol>
-
-                <h2>Notes</h2>
-                <ul>
-                    <li>This experiment takes about 30 minutes.</li>
-                    <li>Please do not update the page during this experiment.</li>
-                    <li>You may not be able to download the results on your phone, so please use your PC.</li>
-                    <li>Please use headphones for this experiment.</li>
-                </ul>
-
-                <h2>実験手順</h2>
-                <ol>
-                    <li>名前を入力し、1から10までのセット番号を選んで下さい。</li>
-                    <li>"Start Experiment"を押して下さい。</li>
-                    <li>音声を聴き、相応しいと思った評価を選択して下さい。<br>
-                        評価基準は<b>音質</b>です。</li>
-                    <li>選択を終えたら"next"ボタンを押し、次の実験に進んで下さい。</li>
-                    <li>評価実験を全て終えたら"finish"ボタンを押して結果をダウンロードして下さい。<br>
-                        結果はSlackか下記のメールアドレスに送信して下さい。</li>
-                    <li>Emailアドレス: yoneyama.reo@g.sp.m.is.nagoya-u.ac.jp</font></li>
-                </ol>
-
-                <h2>注意</h2>
-                <ul>
-                    <li>この実験は凡そ30分ほど要します。</li>
-                    <li>実験中はページの再読み込みは行わないで下さい。</li>
-                    <li>スマートフォンでは結果をダウンロードできない場合があるのでPCを使用して下さい。</li>
-                    <li>ヘッドホンやイヤホンを着用した状態で行って下さい。</li>
-                </ul>
+               お忙しい中、ご協力ありがとうございます！<br>
+               本実験は、音声の非流暢性除去に関わる主観評価実験であり、所要時間は20分〜30分です。<br>
+               <b>本実験は2setで構成されているが、1setだけ参加しても構いません。<u>ただし、お時間がある方は、是非2setの受験をお願いします。</u></b><br>
             </p>
+            <h2>実験手順</h2>
+            <ol>
+                <li>”Name"と"Set"を入力し、"Start"ボタンをクリックしてください。</li>
+                <li>発話を聞いてから、自然性と流暢性二つの指標で五段階評価の中で最も当てはまる評価をお選びください。<br>
+                    1ページに5発話があり、1ページが終わってから"Next"ボタンをクリックしてください。    
+                </li>
+                <li><b>全ての評価が終わってから"Finish"ボタンをクリックしてください。"name"_set_n.csvというCSVは自動的ダウンロードされます。</b>
+                </li>
+                <li>CSVファイルを耿のSlack、もしくは下記メールアドレスまで送ってください</li>
+                <p><a href = "mailto:haopeng.geng@g.sp.m.is.nagoya-u.ac.jp">haopeng.geng@g.sp.m.is.nagoya-u.ac.jp</a></p>
+                
+            </ol>
+            <h2>評価指標の説明<b><font style="color: red;">(※受験前に必ずお読みください！)</font></b></h2>
+            <p>
+                <p>
+                <h4>Fluency(流暢性)</h4>
+                本実験の流暢性は「発話内容は流暢かどうか」で評価する。<br>
+                つまり、フィラーなどがたくさん存在する場合、低い評価を付けると良い。<br>
+                例: <br>
+                <h5><font style="color:blue;"><u>なので今日の講義はいかにこの式を見た時に</u></font></h5>
+                Flu_1. (フィラーが多い)　→　低い評価<br>
+                <audio src="wav/samples/disfluent_eval3_0019.wav" controls preload="auto"></audio><br>
+                Flu_2. (フィターが少ない)　→　高い評価<br>
+                <audio src="wav/samples/fluent_eval3_0019.wav" controls preload="auto"></audio><br>
+                </p>
+                <h4>Natuaility(自然性)</h4>
+                <p>
+                本実験の自然性は「音声が編集されたかどうか」との尺度で評価する。<br>
+                つまり、下記のよう「変な音」、「音声が途切れた」、「継ぎ目が気になる」などを感じるなら低い評価を付けると良い。<br>
+                例: <br>
+                <h5><font style="color: blue;"><u>なのでこれで晴れてですね</u></font></h5>
+                Nat_1. (変な音)　→　低い評価<br>
+                <audio src="wav/samples/noisy_eval1_0051.wav" controls preload="auto"></audio><br>
+                Nat_2. (途切れた)　→　低い評価<br>
+                <audio src="wav/samples/pause_eval1_0051.wav" controls preload="auto"></audio><br>
+                Nat_3. (継ぎ目が気になる)　→　低い評価/やや低い評価<br>
+                <audio src="wav/samples/concat_eval1_0051.wav" controls preload="auto"></audio><br>
+                </p>
+            </p>
+
+            <p>
+            </p>
+
+            <h2>その他</h2>
+            <ul>
+                <li>PCブラウザからご参加をお願いします！</li>
+                <li><b>もし実験中に再生ボタンがグレーなった場合、両指標とも"どちらともいえない"をお選びください。</b></li>
+                <li>実験が開始してから中断、もしくはウェブセットのアップデータをしないでください.</li>
+                <li>イヤホンやヘットホンを着用した上で、もしくは静かな環境でスピーカーで受験をお願いします。</li>
+            </ul>
         </div>
+        <br>
 
         <script type="text/javascript" src="mos.js"></script>
 
         <div id="Display1">
-            <p> Your name: <br>
-            <input type="text" id="name" value=""></p>
-            <p> Setlist number: <br>
-            <label><input type="radio" name="set" id="number" value="1">1</label><br>
             <p>
-            <button id="next1" onclick="start_experiment()">next</button>
+                <label for="name"> Name </label><br>
+                <input type="text" id="name" class="form-controll" placeholder="Your Name">
+            </p>
+            <p> Setlist number: <br>
+                <label><input type="radio" name="set" id="number" value="1">1</label><br>
+                <label><input type="radio" name="set" id="number" value="2">2</label><br>
+            <p>
+            <!-- <p>
+                <label for="area"> Area </label><br>
+                <input type="text" id="area" placeholder="e.g. Japan">
+            </p> -->
+            <p>
+                <button id="start" onclick="start_experiment()">start</button>
             </p>
         </div>
 
-
         <div id="Display2" style="display:none;">
-        <!-- 注意書きなど <body onload="init()"> -->
             <p id="page"></p>
-            <p id="audio"></p>
+
+            <p id="audio0"></p>
+            <p id="fluselect0"></p>
+            <p id="natselect0"></p>
+            
+            <p id="audio1"></p>
+            <p id="fluselect1"></p>
+            <p id="natselect1"></p>
+
+            <p id="audio2"></p>
+            <p id="fluselect2"></p>
+            <p id="natselect2"></p>
+
+            <p id="audio3"></p>
+            <p id="fluselect3"></p>
+            <p id="natselect3"></p>
+
+            <p id="audio4"></p>
+            <p id="fluselect4"></p>
+            <p id="natselect4"></p>
+
+            <p id="audio5"></p>
+            <p id="fluselect5"></p>
+            <p id="natselect5"></p>
+            
+            <p id="audio6"></p>
+            <p id="fluselect6"></p>
+            <p id="natselect6"></p>
+            
+            <p id="audio7"></p>
+            <p id="fluselect7"></p>
+            <p id="natselect7"></p>
+
+            <p id="audio8"></p>
+            <p id="fluselect8"></p>
+            <p id="natselect8"></p>
+            
+            <p id="audio9"></p>
+            <p id="fluselect9"></p>
+            <p id="natselect9"></p>
             <p>
-            <label><input type="radio" name="eval" onclick="evaluation()">Excellent</label><br>
-            <label><input type="radio" name="eval" onclick="evaluation()">Good</label><br>
-            <label><input type="radio" name="eval" onclick="evaluation()">Fair</label><br>
-            <label><input type="radio" name="eval" onclick="evaluation()">Poor</label><br>
-            <label><input type="radio" name="eval" onclick="evaluation()">Bad</label><br>
-        </p>
+                <button id="prev" onclick="prev()">prev</button>
+                <button id="next" onclick="next()">next</button>
+                <button id="finish" onclick="finish()">finish</button>
+            </p>
+        </div>
 
-        <p>
-        <button id="prev" onclick="prev()">prev</button>
-        <button id="next2" onclick="next()">next</button>
-        <button id="finish" onclick="finish()">finish</button>
-        </p>
+    </div>
 
-
-    </body>
+</body>
 
 </html>
