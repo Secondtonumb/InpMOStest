@@ -69,7 +69,7 @@ function start_experiment() {
     // pick up samples randomly
     var rands = pickN(0, n_utt - 1, n_per_page * 2);
     // var number = document.getElementById("number").value
-    file_list = makeFileList(methods, set_num).slice(0, 1);
+    file_list = makeFileList(methods, set_num);
     outfile = name + "_" + "set" + set_num + ".csv";
     nat_scores = (new Array(file_list.length)).fill(0);
     flu_scores = (new Array(file_list.length)).fill(0);
